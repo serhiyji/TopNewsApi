@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Core;
+using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using TopNewsApi.Core.DTOs.User;
@@ -37,13 +39,28 @@ namespace TopNewsApi.Api.Controllers
             }
             return Ok(validationResult.Errors.FirstOrDefault());
         }
-        [HttpPost("EditUser")]
-        public async Task<IActionResult> EditUser(EditUserDto model)
+        [HttpPost("UpdateMainInfoUser")]
+        public async Task<IActionResult> UpdateMainInfoUser(UpdateUserDto model)
         {
-            var validationResult = await new EditUserValidation().ValidateAsync(model);
+            var validationResult = await new UpdateUserValidation().ValidateAsync(model);
             if (validationResult.IsValid)
             {
-                ServiceResponse result = await _userService.EditUserAsync(model);
+                ServiceResponse result = await _userService.ChangeMainInfoUserAsync(model);
+                if (result.Success)
+                {
+                    return Ok(result.Message);
+                }
+                return Ok(result.Errors.FirstOrDefault());
+            }
+            return Ok(validationResult.Errors.FirstOrDefault());
+        }
+        [HttpPost("UpdatePasswordInfoUser")]
+        public async Task<IActionResult> UpdatePasswordInfoUser(UpdatePasswordDto model)
+        {
+            var validationResult = await new UpdatePasswordValidation().ValidateAsync(model);
+            if (validationResult.IsValid)
+            {
+                ServiceResponse result = await _userService.ChangePasswordAsync(model);
                 if (result.Success)
                 {
                     return Ok(result.Message);
