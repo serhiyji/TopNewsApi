@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using TopNewsApi.Core.DTOs.User;
 using TopNewsApi.Core.Services;
+using TopNewsApi.Core.Validation.User;
 
 namespace TopNewsApi.Api.Controllers
 {
@@ -17,6 +20,57 @@ namespace TopNewsApi.Api.Controllers
         public async Task<IActionResult> GetAll()
         {
             return Ok((await _userService.GetAllAsync()).Payload);
+        }
+        [HttpPost("CreateUser")]
+        public async Task<IActionResult> CreateUser(CreateUserDto model)
+        {
+            CreateUserValidation validaor = new CreateUserValidation();
+            var validationResult = await validaor.ValidateAsync(model);
+            if (validationResult.IsValid)
+            {
+                ServiceResponse response = await _userService.CreateUserAsync(model);
+                if (response.Success)
+                {
+                    return Ok(response.Message);
+                }
+                return Ok(response.Errors.FirstOrDefault());
+            }
+            return Ok(validationResult.Errors.FirstOrDefault());
+        }
+        [HttpPost("EditUser")]
+        public async Task<IActionResult> EditUser(EditUserDto model)
+        {
+            var validationResult = await new EditUserValidation().ValidateAsync(model);
+            if (validationResult.IsValid)
+            {
+                ServiceResponse result = await _userService.EditUserAsync(model);
+                if (result.Success)
+                {
+                    return Ok(result.Message);
+                }
+                return Ok(result.Errors.FirstOrDefault());
+            }
+            return Ok(validationResult.Errors.FirstOrDefault());
+        }
+        [HttpPost("DeleteUser")]
+        public async Task<IActionResult> DeleteUser(DeleteUserDto model)
+        {
+            ServiceResponse result = await _userService.DeleteUserAsync(model);
+            if (result.Success)
+            {
+                return Ok(result.Message);
+            }
+            return Ok(result.Errors.FirstOrDefault());
+        }
+        [HttpPost("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string userid, string token)
+        {
+            ServiceResponse result = await _userService.ConfirmEmailAsync(userid, token);
+            if (result.Success)
+            {
+                return Ok(result.Message);
+            }
+            return Ok(result.Errors.FirstOrDefault());
         }
     }
 }
