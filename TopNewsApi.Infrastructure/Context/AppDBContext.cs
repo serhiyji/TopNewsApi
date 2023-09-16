@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TopNewsApi.Core.Entities;
 using TopNewsApi.Core.Entities.Site;
+using TopNewsApi.Core.Entities.Token;
 using TopNewsApi.Core.Entities.User;
 using TopNewsApi.Infrastructure.Initializers;
 
@@ -26,6 +27,7 @@ namespace TopNewsApi.Infrastructure.Context
         public DbSet<Category> Categories { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<NetworkAddress> NetworkAddresses { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

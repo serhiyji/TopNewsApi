@@ -1,11 +1,13 @@
 ﻿using Azure.Core;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using TopNewsApi.Core.DTOs.User;
 using TopNewsApi.Core.Services;
 using TopNewsApi.Core.Validation.User;
+using TopTopNewsApiNews.Core.Validation.User;
 
 namespace TopNewsApi.Api.Controllers
 {
@@ -22,6 +24,18 @@ namespace TopNewsApi.Api.Controllers
         public async Task<IActionResult> GetAll()
         {
             return Ok((await _userService.GetAllAsync()).Payload);
+        }
+        [AllowAnonymous]
+        [HttpPost("Login")]
+        public async Task<IActionResult> LoginUserAsync([FromBody] UserLoginDto model)
+        {
+            var validationResult = await new LoginUserValidation().ValidateAsync(model);
+            if (validationResult.IsValid)
+            {
+                ServiceResponse response = await _userService.LoginUserAsync(model);
+                return Ok(response);
+            }
+            return BadRequest(validationResult.Errors.FirstOrDefault());
         }
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser(CreateUserDto model)

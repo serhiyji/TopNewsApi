@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TopNewsApi.Core.DTOs.User;
 using TopNewsApi.Core.Entities.User;
+using TopNewsApi.Core.Interfaces;
 using TopNewsApi.Core.Validation.User;
 
 namespace TopNewsApi.Core.Services
@@ -25,6 +26,7 @@ namespace TopNewsApi.Core.Services
         private readonly EmailService _emailService;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IJwtService _jwtService;
 
         public UserService(
                 UserManager<AppUser> userManager, 
@@ -32,7 +34,8 @@ namespace TopNewsApi.Core.Services
                 RoleManager<IdentityRole> roleManager, 
                 EmailService emailService, 
                 IMapper mapper, 
-                IConfiguration configuration
+                IConfiguration configuration,
+                IJwtService jwtService
             )
         {
             this._signInManager = signInManager;
@@ -41,6 +44,7 @@ namespace TopNewsApi.Core.Services
             this._emailService = emailService;
             this._mapper = mapper;
             this._configuration = configuration;
+            this._jwtService = jwtService;
         }
 
         #region SignIn, SignOut
@@ -54,8 +58,9 @@ namespace TopNewsApi.Core.Services
             SignInResult result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: true);
             if (result.Succeeded)
             {
+                Tokens? tokens = await _jwtService.GenerateJwtTokensAsync(user);
                 await _signInManager.SignInAsync(user, model.RememberMe);
-                return new ServiceResponse(true, "User successfully loged in.");
+                return new ServiceResponse(true, "User successfully loged in.", accessToken: tokens.Token, refreshToken: tokens.refreshToken.Token);
             }
             if (result.IsNotAllowed)
             {

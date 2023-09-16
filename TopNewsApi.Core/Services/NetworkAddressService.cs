@@ -12,11 +12,11 @@ using TopNewsApi.Core.Interfaces;
 
 namespace TopNewsApi.Core.Services
 {
-    internal class DashdoardAccessService : INetworkAddressService
+    internal class NetworkAddressService : INetworkAddressService
     {
         private readonly IRepository<NetworkAddress> _ipRepo;
         private readonly IMapper _mapper;
-        public DashdoardAccessService(IRepository<NetworkAddress> ipRepo, IMapper mapper)
+        public NetworkAddressService(IRepository<NetworkAddress> ipRepo, IMapper mapper)
         {
             _ipRepo = ipRepo;
             _mapper = mapper;
