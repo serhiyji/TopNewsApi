@@ -1,9 +1,11 @@
 ﻿using Azure.Core;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using TopNewsApi.Core.DTOs.Token;
 using TopNewsApi.Core.DTOs.User;
 using TopNewsApi.Core.Services;
 using TopNewsApi.Core.Validation.User;
@@ -11,6 +13,7 @@ using TopTopNewsApiNews.Core.Validation.User;
 
 namespace TopNewsApi.Api.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -102,6 +105,13 @@ namespace TopNewsApi.Api.Controllers
                 return Ok(result.Message);
             }
             return Ok(result.Errors.FirstOrDefault());
+        }
+        [AllowAnonymous]
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshTokenAsync([FromBody] TokenRequestDto model)
+        {
+            var result = await _userService.RefreshTokenAsync(model);
+            return Ok(result);
         }
     }
 }

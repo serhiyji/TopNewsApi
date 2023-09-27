@@ -11,6 +11,7 @@ using System.Linq;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
+using TopNewsApi.Core.DTOs.Token;
 using TopNewsApi.Core.DTOs.User;
 using TopNewsApi.Core.Entities.User;
 using TopNewsApi.Core.Interfaces;
@@ -282,5 +283,10 @@ namespace TopNewsApi.Core.Services
             return new ServiceResponse(false, "Something went wrong", errors: result.Errors.Select(e => e.Description));
         }
         #endregion
+
+        public async Task<ServiceResponse> RefreshTokenAsync(TokenRequestDto model)
+        {
+            return await _jwtService.VerifyTokenAsync(model);
+        }
     }
 }
