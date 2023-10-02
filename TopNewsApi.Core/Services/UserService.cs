@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TopNewsApi.Core.DTOs.Token;
 using TopNewsApi.Core.DTOs.User;
+using TopNewsApi.Core.Entities.Token;
 using TopNewsApi.Core.Entities.User;
 using TopNewsApi.Core.Interfaces;
 using TopNewsApi.Core.Validation.User;
@@ -287,6 +288,15 @@ namespace TopNewsApi.Core.Services
         public async Task<ServiceResponse> RefreshTokenAsync(TokenRequestDto model)
         {
             return await _jwtService.VerifyTokenAsync(model);
+        }
+
+        public async Task DeleteAllRefreshTokenByUserIdAsync(string userId)
+        {
+            IEnumerable<RefreshToken> refreshTokens = await _jwtService.GetByUserIdAsync(userId);
+            foreach (RefreshToken refreshToken in refreshTokens)
+            {
+                await _jwtService.Delete(refreshToken);
+            }
         }
     }
 }

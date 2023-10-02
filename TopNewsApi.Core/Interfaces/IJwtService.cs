@@ -19,5 +19,6 @@ namespace TopNewsApi.Core.Interfaces
         Task<IEnumerable<RefreshToken>> GetAll();
         Task<Tokens> GenerateJwtTokensAsync(AppUser user);
         Task<ServiceResponse> VerifyTokenAsync(TokenRequestDto tokenRequest);
+        Task<IEnumerable<RefreshToken>> GetByUserIdAsync(string userId);
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using TopNewsApi.Core.DTOs.Token;
 using TopNewsApi.Core.DTOs.User;
+using TopNewsApi.Core.Interfaces;
 using TopNewsApi.Core.Services;
 using TopNewsApi.Core.Validation.User;
 using TopTopNewsApiNews.Core.Validation.User;
@@ -105,6 +106,13 @@ namespace TopNewsApi.Api.Controllers
                 return Ok(result.Message);
             }
             return Ok(result.Errors.FirstOrDefault());
+        }
+        [HttpGet("LogOut")]
+        public async Task<IActionResult> LogOut(string userId)
+        {
+            await _userService.DeleteAllRefreshTokenByUserIdAsync(userId);
+            await _userService.SignOutAsync();
+            return Ok();
         }
         [AllowAnonymous]
         [HttpPost("RefreshToken")]
