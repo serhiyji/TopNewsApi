@@ -111,8 +111,8 @@ namespace TopNewsApi.Api.Controllers
         public async Task<IActionResult> LogOut(string userId)
         {
             await _userService.DeleteAllRefreshTokenByUserIdAsync(userId);
-            await _userService.SignOutAsync();
-            return Ok();
+            ServiceResponse res =  await _userService.SignOutAsync();
+            return Ok(res);
         }
         [AllowAnonymous]
         [HttpPost("RefreshToken")]
