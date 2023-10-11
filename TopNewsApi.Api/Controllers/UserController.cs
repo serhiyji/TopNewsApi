@@ -24,13 +24,13 @@ namespace TopNewsApi.Api.Controllers
         {
             _userService = userService;
         }
-        [HttpGet("GetAll")]
+        [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
         {
-            return Ok((await _userService.GetAllAsync()).Payload);
+            return Ok(await _userService.GetAllAsync());
         }
         [AllowAnonymous]
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> LoginUserAsync([FromBody] UserLoginDto model)
         {
             var validationResult = await new LoginUserValidation().ValidateAsync(model);
@@ -41,7 +41,7 @@ namespace TopNewsApi.Api.Controllers
             }
             return BadRequest(validationResult.Errors.FirstOrDefault());
         }
-        [HttpPost("CreateUser")]
+        [HttpPost("createuser")]
         public async Task<IActionResult> CreateUser(CreateUserDto model)
         {
             CreateUserValidation validaor = new CreateUserValidation();
@@ -107,7 +107,7 @@ namespace TopNewsApi.Api.Controllers
             }
             return Ok(result.Errors.FirstOrDefault());
         }
-        [HttpGet("LogOut")]
+        [HttpGet("logout")]
         public async Task<IActionResult> LogOut(string userId)
         {
             await _userService.DeleteAllRefreshTokenByUserIdAsync(userId);

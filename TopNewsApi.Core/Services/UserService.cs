@@ -105,6 +105,10 @@ namespace TopNewsApi.Core.Services
         public async Task<ServiceResponse<DeleteUserDto, object>> GetDeleteUserDtoByIdAsync(string Id) => this.GetMappedUserByIdAsync<DeleteUserDto>(Id).Result;
         public async Task<ServiceResponse<EditUserDto, object>> GetEditUserDtoByIdAsync(string Id) => this.GetMappedUserByIdAsync<EditUserDto>(Id).Result;
         
+        public async Task<ServiceResponse> GetRolesAsync()
+        {
+            return new ServiceResponse(true, payload: _roleManager.Roles.Select(r => r.Name).ToList());
+        }
         #endregion
 
         #region Create user, Delete user, Edit password user, Edit main info user
@@ -245,12 +249,6 @@ namespace TopNewsApi.Core.Services
         #endregion
 
         #region User edit use admin panel
-        public async Task<List<IdentityRole>> GetAllRolesAsync()
-        {
-            List<IdentityRole> roles = await _roleManager.Roles.ToListAsync();
-            return roles;
-        }
-
         public async Task<ServiceResponse> EditUserAsync(EditUserDto model)
         {
             AppUser? user = await _userManager.FindByIdAsync(model.Id);

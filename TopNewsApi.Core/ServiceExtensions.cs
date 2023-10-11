@@ -19,6 +19,7 @@ namespace TopNewsApi.Core
         {
             services.AddTransient<UserService>();
             services.AddTransient<EmailService>();
+            services.AddTransient<RoleService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<INetworkAddressService, NetworkAddressService>();
