@@ -29,6 +29,11 @@ namespace TopNewsApi.Api.Controllers
         {
             return Ok(await _userService.GetAllAsync());
         }
+        [HttpGet("getbyid")]
+        public async Task<IActionResult> GetById(string userId)
+        {
+            return Ok(await _userService.GetUpdateUserDtoByIdAsync(userId));
+        }
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> LoginUserAsync([FromBody] UserLoginDto model)
@@ -57,7 +62,7 @@ namespace TopNewsApi.Api.Controllers
             }
             return Ok(validationResult.Errors.FirstOrDefault());
         }
-        [HttpPost("UpdateMainInfoUser")]
+        [HttpPost("updatemaininfouser")]
         public async Task<IActionResult> UpdateMainInfoUser(UpdateUserDto model)
         {
             var validationResult = await new UpdateUserValidation().ValidateAsync(model);
@@ -87,15 +92,11 @@ namespace TopNewsApi.Api.Controllers
             }
             return Ok(validationResult.Errors.FirstOrDefault());
         }
-        [HttpPost("DeleteUser")]
+        [HttpPost("deleteuser")]
         public async Task<IActionResult> DeleteUser(DeleteUserDto model)
         {
-            ServiceResponse result = await _userService.DeleteUserAsync(model);
-            if (result.Success)
-            {
-                return Ok(result.Message);
-            }
-            return Ok(result.Errors.FirstOrDefault());
+            ServiceResponse result = await _userService.DeleteUserAsync(model.Id);
+            return Ok(result);
         }
         [HttpPost("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userid, string token)

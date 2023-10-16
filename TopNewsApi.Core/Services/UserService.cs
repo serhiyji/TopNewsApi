@@ -125,9 +125,9 @@ namespace TopNewsApi.Core.Services
             return new ServiceResponse(false, "Something went wrong", errors: result.Errors.Select(e => e.Description));
         }
 
-        public async Task<ServiceResponse> DeleteUserAsync(DeleteUserDto model)
+        public async Task<ServiceResponse> DeleteUserAsync(string idUser)
         {
-            AppUser userdelete = await _userManager.FindByIdAsync(model.Id);
+            AppUser userdelete = await _userManager.FindByIdAsync(idUser);
             if (userdelete == null)
             {
                 return new ServiceResponse(false, "User a was found");
